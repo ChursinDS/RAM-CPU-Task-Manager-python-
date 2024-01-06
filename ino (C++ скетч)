@@ -1,0 +1,29 @@
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("CPU: ");
+  lcd.setCursor(0, 1);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  String data = "";
+  while (Serial.available() > 0) {
+    char incomingChar = Serial.read();
+    data += incomingChar;
+    delay(5);
+  }
+
+  int cpu_index = data.indexOf("CPU:");
+  String cpu_value = data.substring(cpu_index, data.indexOf("|", cpu_index));
+  lcd.setCursor(0, 0);
+  lcd.print(cpu_value);
+}
